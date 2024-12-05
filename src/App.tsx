@@ -19,7 +19,6 @@ function App() {
     (currentPage - 1) * RECIPE_ON_PAGE,
     (currentPage - 1) * RECIPE_ON_PAGE + RECIPE_ON_PAGE
   );
-  console.log("🚀 ~ App ~ currentPage:", showRecipes);
 
   return (
     <div className="App">

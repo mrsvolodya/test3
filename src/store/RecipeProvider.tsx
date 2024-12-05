@@ -45,7 +45,6 @@ const RecipeProvider: React.FC<ProviderProps> = ({ children }) => {
       let url = `https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`;
       const response = await axios.get(url);
       const meals = response.data.meals || [];
-      console.log(meals);
       setRecipes(meals);
     } catch (e) {
       console.error(e, "Failed to fetch recipes.");
