@@ -51,8 +51,7 @@ const RecipeProvider: React.FC<ProviderProps> = ({ children }) => {
     }
   };
 
-  const [debouncedSearchQuery] = useDebounce(searchQuery, 500);
-
+  const [debouncedSearchQuery] = useDebounce(searchQuery, 1000);
   useEffect(() => {
     fetchCategories();
     fetchRecipes(debouncedSearchQuery);
