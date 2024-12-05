@@ -4,13 +4,30 @@ import { ProviderProps } from "../types/ProviderProps";
 import { Meal } from "../types/Meal";
 import { ContextProps } from "../types/ContextProps";
 
-
 const RecipeContext = createContext<ContextProps>({
   recipes: [],
+  selectedRecipes: [],
+  hanleSelectedRecipes: () => {},
+  isInCart: () => false,
 });
 const RecipeProvider: React.FC<ProviderProps> = ({ children }) => {
   const [recipes, setRecipes] = useState<Meal[]>([]);
-  console.log(recipes[0]);
+  const [selectedRecipes, setSelectedRecipes] = useState<Meal[]>([]);
+  const isInCart = (recipes: Meal[], idMeal: string) => {
+    return recipes.some((recipe: Meal) => recipe.idMeal === idMeal);
+  };
+
+  const hanleSelectedRecipes = (recipe: Meal) => {
+    setSelectedRecipes((prevRecipes) => {
+      const isRecipeInCart = isInCart(prevRecipes, recipe.idMeal);
+
+      if (isRecipeInCart) {
+        return prevRecipes.filter((rec) => rec.idMeal !== recipe.idMeal);
+      } else {
+        return [...prevRecipes, recipe];
+      }
+    });
+  };
 
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -28,7 +45,14 @@ const RecipeProvider: React.FC<ProviderProps> = ({ children }) => {
   }, []);
 
   return (
-    <RecipeContext.Provider value={{ recipes }}>
+    <RecipeContext.Provider
+      value={{
+        recipes,
+        selectedRecipes,
+        hanleSelectedRecipes,
+        isInCart,
+      }}
+    >
       {children}
     </RecipeContext.Provider>
   );

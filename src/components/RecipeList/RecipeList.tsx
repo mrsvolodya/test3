@@ -1,27 +1,47 @@
 import { useContext } from "react";
 import { RecipeContext } from "../../store/RecipeProvider";
-import "./RecipeList.css";
+import styles from "./RecipeList.module.css";
 import { Meal } from "../../types/Meal";
-
-export const RecipeList = () => {
-  const { recipes } = useContext(RecipeContext);
+import { Link } from "react-router-dom";
+interface RecipeListProps {
+  recipes: Meal[];
+}
+export const RecipeList: React.FC<RecipeListProps> = ({ recipes }) => {
+  const { hanleSelectedRecipes, isInCart, selectedRecipes } =
+    useContext(RecipeContext);
 
   return (
-    <div className="recipe-list">
-      {recipes.map((recipe: Meal) => (
-        <div key={recipe.idMeal} className="recipe-card">
-          <img
-            src={recipe.strMealThumb}
-            alt={recipe.strMeal}
-            className="recipe-card-image"
-          />
-          <div className="recipe-card-content">
-            <h3 className="recipe-card-title">{recipe.strMeal}</h3>
-            <p className="recipe-card-category">{recipe.strCategory}</p>
-            <p className="recipe-card-area">{recipe.strArea}</p>
+    <div className={styles.cartsContainer}>
+      <Link to="/favoritesRecepies" className={styles.cartLink}>
+        Cart ({selectedRecipes.length})
+      </Link>
+
+      <div className={styles.recipeList}>
+        {recipes.map((recipe: Meal) => (
+          <div key={recipe.idMeal} className={styles.recipeCard}>
+            <button
+              className={styles.backButton}
+              onClick={() => hanleSelectedRecipes(recipe)}
+            >
+              {isInCart(selectedRecipes, recipe.idMeal)
+                ? "Remove from the cart"
+                : "Add to cart"}
+            </button>
+            <Link to={`/recipe/${recipe.idMeal}`}>
+              <img
+                src={recipe.strMealThumb}
+                alt={recipe.strMeal}
+                className={styles.recipeCardImage}
+              />
+              <div className={styles.recipeCardContent}>
+                <h3 className={styles.recipeCardTitle}>{recipe.strMeal}</h3>
+                <p className={styles.recipeCardInfo}>{recipe.strCategory}</p>
+                <p className={styles.recipeCardInfo}>{recipe.strArea}</p>
+              </div>
+            </Link>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };

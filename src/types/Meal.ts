@@ -8,10 +8,10 @@ export interface Meal {
   strMealThumb: string;
   strTags: string | null;
   strYoutube: string;
-  strIngredients: string[];
-  strMeasures: string[];
   strSource: string;
   strImageSource: string | null;
   strCreativeCommonsConfirmed: string | null;
   dateModified: string | null;
+  [key: `strIngredient${number}`]: string | null;
+  [key: `strMeasure${number}`]: string | null;
 }

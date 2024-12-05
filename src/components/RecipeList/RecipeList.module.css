@@ -1,0 +1,85 @@
+.cartsContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.recipeList {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  padding: 20px;
+  box-sizing: border-box;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.recipeCard {
+  background-color: #fff;
+  border-radius: 8px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.recipeCard:hover {
+  transform: scale(1.05);
+}
+
+.recipeCardImage {
+  width: 100%;
+}
+
+.recipeCardTitle {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.recipeCardInfo {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 12px;
+}
+
+.recipeCardButton {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.backButton {
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.backButton:hover {
+  background-color: #45a049;
+}
+
+.cartLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  background-color: #528826;
+  padding: 12px 24px;
+  gap: 16px;
+  border-radius: 8px;
+  color: white;
+  font-size: 16px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  max-width: 1200px;
+}
+
+.cartLink:hover {
+  background-color: #3e6b1f;
+}

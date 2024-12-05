@@ -1,15 +1,14 @@
 import { Routes, Route } from "react-router-dom";
 import App from "./App";
 import { NotFoundPage } from "./pages/NotFoundPage";
-import { RecipeList } from "./components/RecipeList";
+import { RecipeDetail } from "./components/RecipeDetail";
+import { FavoritesPage } from "./pages/FavoritesPage";
 
 export const Root = () => (
   <Routes>
-    <Route path="/" element={<App />}>
-      <Route index element={<RecipeList />} />
-      {/* <Route path="recipe/:id" element={<RecipePage />} /> */}
-      {/* <Route path="cart" element={<CartPage />} /> */}
-      <Route path="*" element={<NotFoundPage />} />
-    </Route>
+    <Route path="/" element={<App />} />
+    <Route path="recipe/:id" element={<RecipeDetail />} />
+    <Route path="/favoritesRecepies" element={<FavoritesPage />} />
+    <Route path="*" element={<NotFoundPage />} />
   </Routes>
 );
