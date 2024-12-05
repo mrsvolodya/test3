@@ -12,11 +12,14 @@
     "@types/react": "^18.3.13",
     "@types/react-dom": "^18.3.1",
     "axios": "^1.7.9",
+    "lodash.debounce": "^4.0.8",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.0.2",
     "react-scripts": "5.0.1",
+    "react-select": "^5.8.3",
     "typescript": "^4.9.5",
+    "use-debounce": "^10.0.4",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -42,5 +45,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/lodash.debounce": "^4.0.9"
   }
 }

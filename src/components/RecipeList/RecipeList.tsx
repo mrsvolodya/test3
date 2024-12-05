@@ -1,14 +1,25 @@
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { RecipeContext } from "../../store/RecipeProvider";
-import styles from "./RecipeList.module.css";
 import { Meal } from "../../types/Meal";
 import { Link } from "react-router-dom";
+import styles from "./RecipeList.module.css";
+import { RecipeFilter } from "../CategoryFilter/RecipeFilter";
+
 interface RecipeListProps {
   recipes: Meal[];
 }
+
 export const RecipeList: React.FC<RecipeListProps> = ({ recipes }) => {
-  const { hanleSelectedRecipes, isInCart, selectedRecipes } =
+  const { hanleSelectedRecipes, isInCart, selectedRecipes, selectedCategory } =
     useContext(RecipeContext);
+
+  const filteredRecipes = recipes.filter((recipe: Meal) => {
+    const matchesCategory = selectedCategory
+      ? recipe.strCategory === selectedCategory
+      : true;
+
+    return matchesCategory;
+  });
 
   return (
     <div className={styles.cartsContainer}>
@@ -16,8 +27,10 @@ export const RecipeList: React.FC<RecipeListProps> = ({ recipes }) => {
         Cart ({selectedRecipes.length})
       </Link>
 
+      <RecipeFilter />
+
       <div className={styles.recipeList}>
-        {recipes.map((recipe: Meal) => (
+        {filteredRecipes.map((recipe: Meal) => (
           <div key={recipe.idMeal} className={styles.recipeCard}>
             <button
               className={styles.backButton}
