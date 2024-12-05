@@ -10,16 +10,8 @@ interface RecipeListProps {
 }
 
 export const RecipeList: React.FC<RecipeListProps> = ({ recipes }) => {
-  const { hanleSelectedRecipes, isInCart, selectedRecipes, selectedCategory } =
+  const { hanleSelectedRecipes, isInCart, selectedRecipes } =
     useContext(RecipeContext);
-
-  const filteredRecipes = recipes.filter((recipe: Meal) => {
-    const matchesCategory = selectedCategory
-      ? recipe.strCategory === selectedCategory
-      : true;
-
-    return matchesCategory;
-  });
 
   return (
     <div className={styles.cartsContainer}>
@@ -30,7 +22,7 @@ export const RecipeList: React.FC<RecipeListProps> = ({ recipes }) => {
       <RecipeFilter />
 
       <div className={styles.recipeList}>
-        {filteredRecipes.map((recipe: Meal) => (
+        {recipes.map((recipe: Meal) => (
           <div key={recipe.idMeal} className={styles.recipeCard}>
             <button
               className={styles.backButton}
