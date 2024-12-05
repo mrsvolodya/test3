@@ -16,9 +16,6 @@ const RecipeContext = createContext<ContextProps>({
   setSelectedCategory: () => {},
   searchQuery: "",
   setSearchQuery: () => {},
-  currentPage: 1,
-  setCurrentPage: () => {},
-  totalPages: 0,
 });
 
 const RecipeProvider: React.FC<ProviderProps> = ({ children }) => {
@@ -27,9 +24,6 @@ const RecipeProvider: React.FC<ProviderProps> = ({ children }) => {
   const [categories, setCategories] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(0);
-  const recipesPerPage = 4;
   const fetchCategories = async () => {
     try {
       const response = await axios.get(
@@ -46,22 +40,13 @@ const RecipeProvider: React.FC<ProviderProps> = ({ children }) => {
     }
   };
 
-  const fetchRecipes = async (
-    query: string = "",
-    page: number = 1,
-    category: string = ""
-  ) => {
+  const fetchRecipes = async (query: string = "", page: number = 1) => {
     try {
       let url = `https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`;
-      if (category) {
-        url = `https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`;
-      }
       const response = await axios.get(url);
       const meals = response.data.meals || [];
+      console.log(meals);
       setRecipes(meals);
-
-      const totalMeals = meals.length;
-      setTotalPages(Math.ceil(totalMeals / recipesPerPage));
     } catch (e) {
       console.error(e, "Failed to fetch recipes.");
     }
@@ -71,14 +56,8 @@ const RecipeProvider: React.FC<ProviderProps> = ({ children }) => {
 
   useEffect(() => {
     fetchCategories();
-    fetchRecipes(debouncedSearchQuery, currentPage, selectedCategory);
-  }, [debouncedSearchQuery, currentPage, selectedCategory]);
-
-  const getCurrentRecipes = () => {
-    const startIndex = (currentPage - 1) * recipesPerPage;
-    const endIndex = startIndex + recipesPerPage;
-    return recipes.slice(startIndex, endIndex);
-  };
+    fetchRecipes(debouncedSearchQuery);
+  }, [debouncedSearchQuery, selectedCategory]);
 
   const isInCart = (recipes: Meal[], idMeal: string) => {
     return recipes.some((recipe: Meal) => recipe.idMeal === idMeal);
@@ -98,7 +77,7 @@ const RecipeProvider: React.FC<ProviderProps> = ({ children }) => {
   return (
     <RecipeContext.Provider
       value={{
-        recipes: getCurrentRecipes(),
+        recipes,
         selectedRecipes,
         hanleSelectedRecipes,
         isInCart,
@@ -108,9 +87,6 @@ const RecipeProvider: React.FC<ProviderProps> = ({ children }) => {
         searchQuery,
         setRecipes,
         setSearchQuery,
-        currentPage,
-        setCurrentPage,
-        totalPages,
       }}
     >
       {children}

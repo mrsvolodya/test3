@@ -12,7 +12,4 @@ export interface ContextProps {
   setSelectedCategory: Dispatch<SetStateAction<string>>;
   searchQuery: string;
   setSearchQuery: Dispatch<SetStateAction<string>>;
-  currentPage: number,
-  setCurrentPage: Dispatch<SetStateAction<number>>,
-  totalPages: number,
 }

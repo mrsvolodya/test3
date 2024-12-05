@@ -1,9 +1,15 @@
-import React, { useContext } from "react";
-import { RecipeContext } from "../../store/RecipeProvider";
+import React from "react";
+interface FilteredRecipe {
+  totalPages: number;
+  setCurrentPage: (v: number) => void;
+  currentPage: number;
+}
 
-const Pagination: React.FC = () => {
-  const { currentPage, setCurrentPage, totalPages } = useContext(RecipeContext);
-
+const Pagination: React.FC<FilteredRecipe> = ({
+  totalPages,
+  currentPage,
+  setCurrentPage,
+}) => {
   const handlePrevPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
