@@ -38,8 +38,6 @@ const Pagination: React.FC<FilteredRecipe> = ({
       ...pageNumbers.slice(Math.max(0, currentIndex - Math.floor(limit / 2))),
     ];
 
-    console.log(currentIndex);
-
     if (visibleNumbers.length > limit) {
       visibleNumbers.length = limit;
     } else {
