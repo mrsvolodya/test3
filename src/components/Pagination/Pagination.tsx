@@ -31,12 +31,14 @@ const Pagination: React.FC<FilteredRecipe> = ({
     }
   };
 
-  const visiblePageNumbers = (total: number, current: number, limit = 7) => {
+  const visiblePageNumbers = (total: number, current: number, limit = 9) => {
     const pageNumbers = Array.from({ length: total }, (_, i) => i + 1);
     const currentIndex = pageNumbers.indexOf(current);
     let visibleNumbers: (string | number)[] = [
       ...pageNumbers.slice(Math.max(0, currentIndex - Math.floor(limit / 2))),
     ];
+
+    console.log(currentIndex);
 
     if (visibleNumbers.length > limit) {
       visibleNumbers.length = limit;
@@ -80,7 +82,6 @@ const Pagination: React.FC<FilteredRecipe> = ({
           })}
           key={`${page}-${index}`}
           onClick={() => handlePageClick(page)}
-          disabled={page === "..."}
         >
           {page}
         </button>
