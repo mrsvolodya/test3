@@ -45,16 +45,6 @@
   pointer-events: none;
 }
 
-.paginationDots {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  background-color: #d5d6e2;
-  margin-right: 10px;
-}
-
 .paginationButton {
   width: 32px;
   height: 32px;

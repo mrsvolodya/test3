@@ -25,29 +25,43 @@ const Pagination: React.FC<FilteredRecipe> = ({
     }
   };
 
-  const handlePageClick = (page: number) => {
-    setCurrentPage(page);
+  const handlePageClick = (page: number | string) => {
+    if (typeof page === "number") {
+      setCurrentPage(page);
+    }
   };
 
-  const pagination = (total: number[], current: number, length = 7) => {
-    const prevLength = Math.ceil(length / 2);
-    const nextLength = Math.floor(length / 2);
+  const visiblePageNumbers = (total: number, current: number, limit = 7) => {
+    const pageNumbers = Array.from({ length: total }, (_, i) => i + 1);
+    const currentIndex = pageNumbers.indexOf(current);
+    let visibleNumbers: (string | number)[] = [
+      ...pageNumbers.slice(Math.max(0, currentIndex - Math.floor(limit / 2))),
+    ];
 
-    if (current <= prevLength) {
-      return total.slice(0, length);
+    if (visibleNumbers.length > limit) {
+      visibleNumbers.length = limit;
+    } else {
+      visibleNumbers = pageNumbers.slice(-limit);
     }
 
-    if (current >= total.length - nextLength) {
-      return total.slice(-length);
+    if (visibleNumbers[0] !== 1) {
+      visibleNumbers[0] = 1;
+      visibleNumbers[1] = "...";
     }
 
-    return total.slice(current - prevLength, current + nextLength);
+    if (
+      visibleNumbers[visibleNumbers.length - 1] !==
+      pageNumbers[pageNumbers.length - 1]
+    ) {
+      visibleNumbers[visibleNumbers.length - 1] =
+        pageNumbers[pageNumbers.length - 1];
+      visibleNumbers[visibleNumbers.length - 2] = "...";
+    }
+
+    return visibleNumbers;
   };
 
-  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
-  const visiblePages = pagination(pageNumbers, currentPage);
-  const showDotsBefore = currentPage > 4;
-  const showDotsAfter = totalPages > 7 && currentPage + 3 < totalPages;
+  const visiblePages = visiblePageNumbers(totalPages, currentPage);
 
   return (
     <div className={style.pagination}>
@@ -59,41 +73,18 @@ const Pagination: React.FC<FilteredRecipe> = ({
         {"<"}
       </button>
 
-      {showDotsBefore && (
-        <>
-          <button
-            className={classNames(style.paginationNumber)}
-            onClick={() => handlePageClick(1)}
-          >
-            1
-          </button>
-          <span className={style.paginationDots}>...</span>
-        </>
-      )}
-
-      {visiblePages.map((page) => (
+      {visiblePages.map((page, index) => (
         <button
           className={classNames(style.paginationNumber, {
             [style.paginationActive]: page === currentPage,
           })}
-          key={page}
+          key={`${page}-${index}`}
           onClick={() => handlePageClick(page)}
+          disabled={page === "..."}
         >
           {page}
         </button>
       ))}
-
-      {showDotsAfter && (
-        <>
-          <span className={style.paginationDots}>...</span>
-          <button
-            className={classNames(style.paginationNumber)}
-            onClick={() => handlePageClick(totalPages)}
-          >
-            {totalPages}
-          </button>
-        </>
-      )}
 
       <button
         className={classNames(style.paginationButton, style.next)}

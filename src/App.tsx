@@ -20,7 +20,6 @@ function App() {
   const totalNumberOfPage = Math.ceil(
     filteredByCategory.length / RECIPE_ON_PAGE
   );
-  
 
   return (
     <div className="App">
