@@ -1,11 +1,10 @@
 import { useContext, useState } from "react";
-import "./App.css";
 import { RecipeList } from "./components/RecipeList/RecipeList";
 import { RecipeContext } from "./store/RecipeProvider";
 import Pagination from "./components/Pagination/Pagination";
 
 function App() {
-  const RECIPE_ON_PAGE = 4;
+  const RECIPE_ON_PAGE = 2;
   const { recipes, selectedCategory } = useContext(RecipeContext);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
@@ -13,12 +12,15 @@ function App() {
     return selectedCategory ? recipe.strCategory === selectedCategory : true;
   });
 
-  const totalPages = Math.ceil(filteredByCategory.length / RECIPE_ON_PAGE);
-
   const showRecipes = filteredByCategory.slice(
     (currentPage - 1) * RECIPE_ON_PAGE,
     (currentPage - 1) * RECIPE_ON_PAGE + RECIPE_ON_PAGE
   );
+
+  const totalNumberOfPage = Math.ceil(
+    filteredByCategory.length / RECIPE_ON_PAGE
+  );
+  
 
   return (
     <div className="App">
@@ -27,9 +29,9 @@ function App() {
       <main>
         <RecipeList recipes={showRecipes} />
         <Pagination
-          totalPages={totalPages}
-          setCurrentPage={setCurrentPage}
+          totalPages={totalNumberOfPage}
           currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
         />
       </main>
 

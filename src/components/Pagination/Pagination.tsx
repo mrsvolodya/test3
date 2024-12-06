@@ -1,6 +1,7 @@
 import React from "react";
 import style from "./Pagination.module.css";
 import classNames from "classnames";
+
 interface FilteredRecipe {
   totalPages: number;
   setCurrentPage: (v: number) => void;
@@ -28,37 +29,77 @@ const Pagination: React.FC<FilteredRecipe> = ({
     setCurrentPage(page);
   };
 
-  const pageNumbers = [];
-  for (let i = 1; i <= totalPages; i++) {
-    pageNumbers.push(i);
-  }
+  const pagination = (total: number[], current: number, length = 7) => {
+    const prevLength = Math.ceil(length / 2);
+    const nextLength = Math.floor(length / 2);
+
+    if (current <= prevLength) {
+      return total.slice(0, length);
+    }
+
+    if (current >= total.length - nextLength) {
+      return total.slice(-length);
+    }
+
+    return total.slice(current - prevLength, current + nextLength);
+  };
+
+  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
+  const visiblePages = pagination(pageNumbers, currentPage);
+  const showDotsBefore = currentPage > 4;
+  const showDotsAfter = totalPages > 7 && currentPage + 3 < totalPages;
 
   return (
     <div className={style.pagination}>
-      <button onClick={handlePrevPage} disabled={currentPage === 1}>
+      <button
+        className={classNames(style.paginationButton, style.prev)}
+        onClick={handlePrevPage}
+        disabled={currentPage === 1}
+      >
         {"<"}
       </button>
 
-      {pageNumbers.slice(0, 7).map((page) => (
+      {showDotsBefore && (
+        <>
+          <button
+            className={classNames(style.paginationNumber)}
+            onClick={() => handlePageClick(1)}
+          >
+            1
+          </button>
+          <span className={style.paginationDots}>...</span>
+        </>
+      )}
+
+      {visiblePages.map((page) => (
         <button
+          className={classNames(style.paginationNumber, {
+            [style.paginationActive]: page === currentPage,
+          })}
           key={page}
           onClick={() => handlePageClick(page)}
-          className={classNames(page === currentPage ? style.active : "")}
         >
           {page}
         </button>
       ))}
 
-      {totalPages > 7 && (
+      {showDotsAfter && (
         <>
-          <span>...</span>
-          <button onClick={() => handlePageClick(totalPages)}>
+          <span className={style.paginationDots}>...</span>
+          <button
+            className={classNames(style.paginationNumber)}
+            onClick={() => handlePageClick(totalPages)}
+          >
             {totalPages}
           </button>
         </>
       )}
 
-      <button onClick={handleNextPage} disabled={currentPage === totalPages}>
+      <button
+        className={classNames(style.paginationButton, style.next)}
+        onClick={handleNextPage}
+        disabled={currentPage === totalPages}
+      >
         {">"}
       </button>
     </div>
