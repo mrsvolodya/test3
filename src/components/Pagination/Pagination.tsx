@@ -1,4 +1,6 @@
 import React from "react";
+import style from "./Pagination.module.css";
+import classNames from "classnames";
 interface FilteredRecipe {
   totalPages: number;
   setCurrentPage: (v: number) => void;
@@ -32,7 +34,7 @@ const Pagination: React.FC<FilteredRecipe> = ({
   }
 
   return (
-    <div className="pagination">
+    <div className={style.pagination}>
       <button onClick={handlePrevPage} disabled={currentPage === 1}>
         {"<"}
       </button>
@@ -41,7 +43,7 @@ const Pagination: React.FC<FilteredRecipe> = ({
         <button
           key={page}
           onClick={() => handlePageClick(page)}
-          className={page === currentPage ? "active" : ""}
+          className={classNames(page === currentPage ? style.active : "")}
         >
           {page}
         </button>
