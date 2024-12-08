@@ -2,13 +2,14 @@ import React, { useContext } from "react";
 import { RecipeContext } from "../../store/RecipeProvider";
 import { useQuery } from "@tanstack/react-query";
 import { fetchCategories } from "../../api/fetchCtigories";
+import { QueryKeys } from "../../keys/QueryKeys";
 
 export const RecipeFilter: React.FC = () => {
   const { selectedCategory, setSelectedCategory, searchQuery, setSearchQuery } =
     useContext(RecipeContext);
-  
+
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["categories"],
+    queryKey: [QueryKeys.allCategories],
     queryFn: fetchCategories,
   });
 

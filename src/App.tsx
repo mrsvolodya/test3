@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchRecipes } from "./api/fetchRecipes";
 import { Meal } from "./types/Meal";
 import { useDebounce } from "use-debounce";
+import { QueryKeys } from "./keys/QueryKeys";
 
 function App() {
   const RECIPE_ON_PAGE = 4;
@@ -18,7 +19,7 @@ function App() {
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["recipesQuery", debouncedSearchQuery],
+    queryKey: [QueryKeys.allCategories, debouncedSearchQuery],
     queryFn: () => fetchRecipes(debouncedSearchQuery),
   });
   if (isLoading) return <div>Loading...</div>;
