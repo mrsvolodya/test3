@@ -12,11 +12,12 @@ interface RecipeListProps {
 export const RecipeList: React.FC<RecipeListProps> = ({ recipes }) => {
   const { hanleSelectedRecipes, isInCart, selectedRecipes } =
     useContext(RecipeContext);
+  const isFavorites = selectedRecipes.length > 0;
 
   return (
     <div className={styles.cartsContainer}>
       <Link to="/favoritesRecepies" className={styles.cartLink}>
-        Cart ({selectedRecipes.length})
+        Favorites recipes {isFavorites && selectedRecipes.length}
       </Link>
 
       <RecipeFilter />

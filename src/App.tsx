@@ -2,21 +2,34 @@ import { useContext, useState } from "react";
 import { RecipeList } from "./components/RecipeList/RecipeList";
 import { RecipeContext } from "./store/RecipeProvider";
 import Pagination from "./components/Pagination/Pagination";
+import { useQuery } from "@tanstack/react-query";
+import { fetchRecipes } from "./api/fetchRecipes";
+import { Meal } from "./types/Meal";
+import { useDebounce } from "use-debounce";
 
 function App() {
-  const RECIPE_ON_PAGE = 2;
-  const { recipes, selectedCategory } = useContext(RecipeContext);
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const RECIPE_ON_PAGE = 4;
+  const { selectedCategory, searchQuery } = useContext(RecipeContext);
+  const [debouncedSearchQuery] = useDebounce(searchQuery, 1000);
 
-  const filteredByCategory = recipes.filter((recipe) => {
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const {
+    data: recipes,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["recipesQuery", debouncedSearchQuery],
+    queryFn: () => fetchRecipes(debouncedSearchQuery),
+  });
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) throw new Error("Error fetching data!");
+
+  const filteredByCategory = recipes.filter((recipe: Meal) => {
     return selectedCategory ? recipe.strCategory === selectedCategory : true;
   });
-
-  const showRecipes = filteredByCategory.slice(
-    (currentPage - 1) * RECIPE_ON_PAGE,
-    (currentPage - 1) * RECIPE_ON_PAGE + RECIPE_ON_PAGE
-  );
-
+  const startIndex = (currentPage - 1) * RECIPE_ON_PAGE;
+  const endIndex = startIndex + RECIPE_ON_PAGE;
+  const showRecipes = filteredByCategory.slice(startIndex, endIndex);
   const totalNumberOfPage = Math.ceil(
     filteredByCategory.length / RECIPE_ON_PAGE
   );
@@ -30,7 +43,7 @@ function App() {
         <Pagination
           totalPages={totalNumberOfPage}
           currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
+          setCurrentPage={(page) => setCurrentPage(page)}
         />
       </main>
 

@@ -32,16 +32,16 @@ const Pagination: React.FC<FilteredRecipe> = ({
   };
 
   const visiblePageNumbers = (total: number, current: number, limit = 9) => {
-    const pageNumbers = Array.from({ length: total }, (_, i) => i + 1);
-    const currentIndex = pageNumbers.indexOf(current);
+    const quantityPages = Array.from({ length: total }, (_, i) => i + 1);
+    const currentIndex = quantityPages.indexOf(current);
     let visibleNumbers: (string | number)[] = [
-      ...pageNumbers.slice(Math.max(0, currentIndex - Math.floor(limit / 2))),
+      ...quantityPages.slice(Math.max(0, currentIndex - Math.floor(limit / 2))),
     ];
 
     if (visibleNumbers.length > limit) {
       visibleNumbers.length = limit;
     } else {
-      visibleNumbers = pageNumbers.slice(-limit);
+      visibleNumbers = quantityPages.slice(-limit);
     }
 
     if (visibleNumbers[0] !== 1) {
@@ -51,10 +51,10 @@ const Pagination: React.FC<FilteredRecipe> = ({
 
     if (
       visibleNumbers[visibleNumbers.length - 1] !==
-      pageNumbers[pageNumbers.length - 1]
+      quantityPages[quantityPages.length - 1]
     ) {
       visibleNumbers[visibleNumbers.length - 1] =
-        pageNumbers[pageNumbers.length - 1];
+        quantityPages[quantityPages.length - 1];
       visibleNumbers[visibleNumbers.length - 2] = "...";
     }
 
