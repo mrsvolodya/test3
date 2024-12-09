@@ -7,7 +7,6 @@ import styles from "./FavoritesList.module.css";
 export const FavoritesList = () => {
   const { selectedRecipes } = useContext(RecipeContext);
   const navigation = useNavigate();
-  console.log(selectedRecipes);
   return (
     <div>
       <button className={styles.button} onClick={() => navigation(-1)}>

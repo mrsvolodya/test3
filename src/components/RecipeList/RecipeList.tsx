@@ -26,7 +26,7 @@ export const RecipeList: React.FC<RecipeListProps> = ({
           Favorites recipes {isFavorites && selectedRecipes.length}
         </Link>
 
-        <RecipeFilter />
+        {!isFavorite && <RecipeFilter />}
         <div className={styles.recipeList}>
           {recipes.map((recipe: Meal) => (
             <div key={recipe.idMeal} className={styles.recipeCard}>

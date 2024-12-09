@@ -1,20 +1,19 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { RecipeContext } from "../../store/RecipeProvider";
-import { useQuery } from "@tanstack/react-query";
-import { fetchCategories } from "../../api/fetchCtigories";
-import { QueryKeys } from "../../keys/QueryKeys";
+import { useCategories } from "../../hooks/useCategories";
 
 export const RecipeFilter: React.FC = () => {
+  const inputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current?.focus();
+    }
+  }, [inputRef]);
+
   const { selectedCategory, setSelectedCategory, searchQuery, setSearchQuery } =
     useContext(RecipeContext);
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: [QueryKeys.allCategories],
-    queryFn: fetchCategories,
-  });
-
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) throw new Error("Error fetching  category data!");
+  const { data, isLoading, isError } = useCategories();
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
@@ -25,6 +24,9 @@ export const RecipeFilter: React.FC = () => {
   ) => {
     setSelectedCategory(event.target.value);
   };
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) throw new Error("Error fetching  category data!");
 
   return (
     <div>
@@ -37,6 +39,7 @@ export const RecipeFilter: React.FC = () => {
         ))}
       </select>
       <input
+        ref={inputRef}
         type="text"
         placeholder="Search for a recipe"
         value={searchQuery}

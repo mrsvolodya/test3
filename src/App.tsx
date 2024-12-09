@@ -2,28 +2,34 @@ import { useContext, useState } from "react";
 import { RecipeList } from "./components/RecipeList/RecipeList";
 import { RecipeContext } from "./store/RecipeProvider";
 import Pagination from "./components/Pagination/Pagination";
-import { useQuery } from "@tanstack/react-query";
-import { fetchRecipes } from "./api/fetchRecipes";
 import { Meal } from "./types/Meal";
 import { useDebounce } from "use-debounce";
-import { QueryKeys } from "./keys/QueryKeys";
+import { useRecipes } from "./hooks/useRecipes";
 
 function App() {
   const RECIPE_ON_PAGE = 4;
-  const { selectedCategory, searchQuery } = useContext(RecipeContext);
+  const { selectedCategory, searchQuery, setSearchQuery } =
+    useContext(RecipeContext);
   const [debouncedSearchQuery] = useDebounce(searchQuery, 1000);
-
+  const handleClearSearch = () => {
+    setSearchQuery("");
+  };
   const [currentPage, setCurrentPage] = useState<number>(1);
   const {
     data: recipes,
     isLoading,
     isError,
-  } = useQuery({
-    queryKey: [QueryKeys.allCategories, debouncedSearchQuery],
-    queryFn: () => fetchRecipes(debouncedSearchQuery),
-  });
+  } = useRecipes(debouncedSearchQuery);
   if (isLoading) return <div>Loading...</div>;
   if (isError) throw new Error("Error fetching data!");
+  if (!recipes || recipes.length === 0) {
+    return (
+      <div>
+        Recipes not found!...
+        <button onClick={handleClearSearch}>Clear Field</button>
+      </div>
+    );
+  }
 
   const filteredByCategory = recipes.filter((recipe: Meal) => {
     return selectedCategory ? recipe.strCategory === selectedCategory : true;
