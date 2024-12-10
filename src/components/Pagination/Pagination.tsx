@@ -4,8 +4,8 @@ import classNames from "classnames";
 
 interface FilteredRecipe {
   totalPages: number;
-  setCurrentPage: (v: number) => void;
-  currentPage: number;
+  setCurrentPage: (v: string) => void;
+  currentPage: string;
 }
 
 const Pagination: React.FC<FilteredRecipe> = ({
@@ -13,48 +13,54 @@ const Pagination: React.FC<FilteredRecipe> = ({
   currentPage,
   setCurrentPage,
 }) => {
+  const toString = (value: string | number): string => String(value);
+  const toNumber = (value: string | number): number => +value;
+
   const handlePrevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
+    const current = toNumber(currentPage);
+    if (current > 1) {
+      setCurrentPage(toString(current - 1));
     }
   };
 
   const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
+    const current = toNumber(currentPage);
+    if (current < totalPages) {
+      setCurrentPage(toString(current + 1));
     }
   };
 
-  const handlePageClick = (page: number | string) => {
-    if (typeof page === "number") {
-      setCurrentPage(page);
+  const handlePageClick = (page: string | number) => {
+    const pageStr = toString(page);
+    if (!isNaN(toNumber(pageStr))) {
+      setCurrentPage(pageStr);
     }
   };
 
-  const visiblePageNumbers = (total: number, current: number, limit = 9) => {
-    const quantityPages = Array.from({ length: total }, (_, i) => i + 1);
+  const visiblePageNumbers = (total: number, current: string, limit = 9) => {
+    const quantityPages = Array.from({ length: total }, (_, i) =>
+      toString(i + 1)
+    );
     const currentIndex = quantityPages.indexOf(current);
-    let visibleNumbers: (string | number)[] = [
+
+    let visibleNumbers: string[] = [
       ...quantityPages.slice(Math.max(0, currentIndex - Math.floor(limit / 2))),
     ];
 
     if (visibleNumbers.length > limit) {
-      visibleNumbers.length = limit;
+      visibleNumbers = visibleNumbers.slice(0, limit);
     } else {
       visibleNumbers = quantityPages.slice(-limit);
     }
 
-    if (visibleNumbers[0] !== 1) {
-      visibleNumbers[0] = 1;
+    if (visibleNumbers[0] !== "1") {
+      visibleNumbers[0] = "1";
       visibleNumbers[1] = "...";
     }
 
-    if (
-      visibleNumbers[visibleNumbers.length - 1] !==
-      quantityPages[quantityPages.length - 1]
-    ) {
-      visibleNumbers[visibleNumbers.length - 1] =
-        quantityPages[quantityPages.length - 1];
+    const lastPage = toString(quantityPages[quantityPages.length - 1]);
+    if (visibleNumbers[visibleNumbers.length - 1] !== lastPage) {
+      visibleNumbers[visibleNumbers.length - 1] = lastPage;
       visibleNumbers[visibleNumbers.length - 2] = "...";
     }
 
@@ -68,7 +74,7 @@ const Pagination: React.FC<FilteredRecipe> = ({
       <button
         className={classNames(style.paginationButton, style.prev)}
         onClick={handlePrevPage}
-        disabled={currentPage === 1}
+        disabled={currentPage === "1"}
       >
         {"<"}
       </button>
@@ -88,7 +94,7 @@ const Pagination: React.FC<FilteredRecipe> = ({
       <button
         className={classNames(style.paginationButton, style.next)}
         onClick={handleNextPage}
-        disabled={currentPage === totalPages}
+        disabled={currentPage === toString(totalPages)}
       >
         {">"}
       </button>

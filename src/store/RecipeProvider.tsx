@@ -2,21 +2,19 @@ import React, { createContext, useEffect, useState } from "react";
 import { ProviderProps } from "../types/ProviderProps";
 import { Meal } from "../types/Meal";
 import { ContextProps } from "../types/ContextProps";
+import { useSearchParams } from "react-router-dom";
 
 const RecipeContext = createContext<ContextProps>({
+  searchParams: new URLSearchParams(),
+  setSearchParams: () => {},
   selectedRecipes: [],
   hanleSelectedRecipes: () => {},
   isInCart: () => false,
-  selectedCategory: "",
-  setSelectedCategory: () => {},
-  searchQuery: "",
-  setSearchQuery: () => {},
 });
 
 const RecipeProvider: React.FC<ProviderProps> = ({ children }) => {
   const [selectedRecipes, setSelectedRecipes] = useState<Meal[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
-  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const isInCart = (recipes: Meal[], idMeal: string) => {
     return recipes.some((recipe: Meal) => recipe.idMeal === idMeal);
@@ -56,13 +54,11 @@ const RecipeProvider: React.FC<ProviderProps> = ({ children }) => {
   return (
     <RecipeContext.Provider
       value={{
+        searchParams,
+        setSearchParams,
         selectedRecipes,
         hanleSelectedRecipes,
         isInCart,
-        selectedCategory,
-        setSelectedCategory,
-        searchQuery,
-        setSearchQuery,
       }}
     >
       {children}

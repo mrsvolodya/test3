@@ -10,13 +10,13 @@ const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
-  <RecipeProvider>
-    <Router>
+  <Router>
+    <RecipeProvider>
       <QueryClientProvider client={queryClient}>
         <Root />
       </QueryClientProvider>
-    </Router>
-  </RecipeProvider>
+    </RecipeProvider>
+  </Router>
 );
 
 reportWebVitals();

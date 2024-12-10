@@ -1,28 +1,45 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { RecipeList } from "./components/RecipeList/RecipeList";
 import { RecipeContext } from "./store/RecipeProvider";
 import Pagination from "./components/Pagination/Pagination";
-import { Meal } from "./types/Meal";
 import { useDebounce } from "use-debounce";
 import { useRecipes } from "./hooks/useRecipes";
+import { useFilteredRecipes } from "./hooks/useFilteredRecipes";
 
 function App() {
   const RECIPE_ON_PAGE = 4;
-  const { selectedCategory, searchQuery, setSearchQuery } =
-    useContext(RecipeContext);
-  const [debouncedSearchQuery] = useDebounce(searchQuery, 1000);
+  const { setSearchParams, searchParams } = useContext(RecipeContext);
   const handleClearSearch = () => {
-    setSearchQuery("");
+    setSearchParams({ filterBy: "" });
   };
-  const [currentPage, setCurrentPage] = useState<number>(1);
+
+  const filterBy = searchParams.get("filterBy") || "";
+  const categoryQuery = searchParams.get("category") || "";
+  const currentPage = searchParams.get("page") || "1";
+  const [debouncedSearchQuery] = useDebounce(filterBy, 1000);
   const {
-    data: recipes,
+    data: recipes = [],
     isLoading,
     isError,
   } = useRecipes(debouncedSearchQuery);
+
+  const filteredRecipes = useFilteredRecipes(recipes, categoryQuery, filterBy);
+  const startIndex = (+currentPage - 1) * RECIPE_ON_PAGE;
+  const showRecipes = filteredRecipes.slice(
+    startIndex,
+    startIndex + RECIPE_ON_PAGE
+  );
+  const totalNumberOfPage = Math.ceil(filteredRecipes.length / RECIPE_ON_PAGE);
+
+  const handleCurrentPage = (currentPage: string) => {
+    const params = new URLSearchParams(searchParams);
+    params.set("page", String(currentPage));
+    setSearchParams(params);
+  };
+
   if (isLoading) return <div>Loading...</div>;
   if (isError) throw new Error("Error fetching data!");
-  if (!recipes || recipes.length === 0) {
+  if (!recipes) {
     return (
       <div>
         Recipes not found!...
@@ -30,16 +47,6 @@ function App() {
       </div>
     );
   }
-
-  const filteredByCategory = recipes.filter((recipe: Meal) => {
-    return selectedCategory ? recipe.strCategory === selectedCategory : true;
-  });
-  const startIndex = (currentPage - 1) * RECIPE_ON_PAGE;
-  const endIndex = startIndex + RECIPE_ON_PAGE;
-  const showRecipes = filteredByCategory.slice(startIndex, endIndex);
-  const totalNumberOfPage = Math.ceil(
-    filteredByCategory.length / RECIPE_ON_PAGE
-  );
 
   return (
     <div className="App">
@@ -50,7 +57,7 @@ function App() {
         <Pagination
           totalPages={totalNumberOfPage}
           currentPage={currentPage}
-          setCurrentPage={(page) => setCurrentPage(page)}
+          setCurrentPage={(page) => handleCurrentPage(page)}
         />
       </main>
 

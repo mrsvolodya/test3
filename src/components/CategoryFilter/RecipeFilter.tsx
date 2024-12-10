@@ -5,32 +5,34 @@ import { useCategories } from "../../hooks/useCategories";
 export const RecipeFilter: React.FC = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current?.focus();
-    }
-  }, [inputRef]);
+    inputRef.current?.focus();
+  }, []);
 
-  const { selectedCategory, setSelectedCategory, searchQuery, setSearchQuery } =
-    useContext(RecipeContext);
-
+  const { setSearchParams, searchParams } = useContext(RecipeContext);
   const { data, isLoading, isError } = useCategories();
+  const postQuery = searchParams.get("filterBy") || "";
+  const categoryQuery = searchParams.get("category") || "";
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
+    const params = new URLSearchParams(searchParams);
+    params.set("filterBy", event.target.value);
+    setSearchParams(params);
   };
 
   const handleCategoryChange = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
-    setSelectedCategory(event.target.value);
+    const params = new URLSearchParams(searchParams);
+    params.set("category", event.target.value);
+    setSearchParams(params);
   };
 
   if (isLoading) return <div>Loading...</div>;
-  if (isError) throw new Error("Error fetching  category data!");
+  if (isError) return <div>Error fetching category data!</div>;
 
   return (
     <div>
-      <select onChange={handleCategoryChange} value={selectedCategory}>
+      <select onChange={handleCategoryChange} value={categoryQuery}>
         <option value="">All Categories</option>
         {data.map(({ strCategory }: { strCategory: string }) => (
           <option key={strCategory} value={strCategory}>
@@ -40,9 +42,9 @@ export const RecipeFilter: React.FC = () => {
       </select>
       <input
         ref={inputRef}
-        type="text"
+        type="search"
         placeholder="Search for a recipe"
-        value={searchQuery}
+        value={postQuery}
         onChange={handleSearchChange}
       />
     </div>
