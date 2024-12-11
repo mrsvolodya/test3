@@ -3,12 +3,11 @@ import styles from "./IngredientsList.module.css";
 import { Meal } from "../../types/Meal";
 
 interface IngredientsListProps {
-  recipes: Meal[];
+  recipe: Meal | Meal[];
 }
 
-export const IngredientsList: React.FC<IngredientsListProps> = ({
-  recipes,
-}) => {
+export function IngredientsList({ recipe }: IngredientsListProps) {
+  const recipes = Array.isArray(recipe) ? recipe : [recipe];
   const ingredientCounts: Record<string, number> = recipes.reduce(
     (acc, recipe) => {
       let i = 1;
@@ -23,6 +22,14 @@ export const IngredientsList: React.FC<IngredientsListProps> = ({
   );
 
   const ingredientList = Object.entries(ingredientCounts);
+  const totalIngredients = ingredientList.reduce(
+    (sum, [, count]) => sum + count,
+    0
+  );
+
+  if (totalIngredients === 0) {
+    return <p>No ingredients found.</p>;
+  }
 
   return (
     <div className={styles.container}>
@@ -34,6 +41,9 @@ export const IngredientsList: React.FC<IngredientsListProps> = ({
           </li>
         ))}
       </ul>
+      <p className={styles.totalIngredients}>
+        Total ingredients: {totalIngredients} pcs
+      </p>
     </div>
   );
-};
+}

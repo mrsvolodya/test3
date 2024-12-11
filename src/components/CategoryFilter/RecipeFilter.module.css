@@ -1,0 +1,11 @@
+.searchContainer {
+  display: flex;
+  height: 30px;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.searchField,
+.selectField {
+  width: 150px;
+}

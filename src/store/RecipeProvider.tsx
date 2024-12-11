@@ -12,19 +12,27 @@ const RecipeContext = createContext<ContextProps>({
   isInCart: () => false,
 });
 
-const RecipeProvider: React.FC<ProviderProps> = ({ children }) => {
+function RecipeProvider({ children }: ProviderProps) {
   const [selectedRecipes, setSelectedRecipes] = useState<Meal[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const isInCart = (recipes: Meal[], idMeal: string) => {
+  useEffect(() => {
+    const favorites = localStorage.getItem("selectedRecipes");
+    if (favorites) {
+      const parsedFavorites = JSON.parse(favorites);
+      setSelectedRecipes(parsedFavorites);
+    }
+  }, []);
+
+  function isInCart(recipes: Meal[], idMeal: string) {
     return recipes.some((recipe: Meal) => recipe.idMeal === idMeal);
-  };
+  }
 
-  const addToLocalStorage = (key: string, recipe: Meal[]) => {
+  function addToLocalStorage(key: string, recipe: Meal[]) {
     localStorage.setItem(key, JSON.stringify(recipe));
-  };
+  }
 
-  const hanleSelectedRecipes = (recipe: Meal) => {
+  function hanleSelectedRecipes(recipe: Meal) {
     setSelectedRecipes((prevRecipes) => {
       const isRecipeInCart = isInCart(prevRecipes, recipe.idMeal);
       if (isRecipeInCart) {
@@ -41,15 +49,7 @@ const RecipeProvider: React.FC<ProviderProps> = ({ children }) => {
         return addNewRecipe;
       }
     });
-  };
-
-  useEffect(() => {
-    const favorites = localStorage.getItem("selectedRecipes");
-    if (favorites) {
-      const parsedFavorites = JSON.parse(favorites);
-      setSelectedRecipes(parsedFavorites);
-    }
-  }, []);
+  }
 
   return (
     <RecipeContext.Provider
@@ -64,6 +64,6 @@ const RecipeProvider: React.FC<ProviderProps> = ({ children }) => {
       {children}
     </RecipeContext.Provider>
   );
-};
+}
 
 export { RecipeContext, RecipeProvider };

@@ -11,10 +11,7 @@ interface RecipeListProps {
   isFavorite?: boolean;
 }
 
-export const RecipeList: React.FC<RecipeListProps> = ({
-  recipes,
-  isFavorite = false,
-}) => {
+export function RecipeList({ recipes, isFavorite = false }: RecipeListProps) {
   const { hanleSelectedRecipes, isInCart, selectedRecipes } =
     useContext(RecipeContext);
   const isFavorites = selectedRecipes.length > 0;
@@ -54,7 +51,7 @@ export const RecipeList: React.FC<RecipeListProps> = ({
           ))}
         </div>
       </div>
-      {isFavorite && <IngredientsList recipes={recipes} />}
+      {isFavorite && <IngredientsList recipe={recipes} />}
     </>
   );
-};
+}

@@ -1,6 +1,5 @@
 import "./index.css";
 import ReactDOM from "react-dom/client";
-import reportWebVitals from "./reportWebVitals";
 import { HashRouter as Router } from "react-router-dom";
 import { RecipeProvider } from "./store/RecipeProvider";
 import { Root } from "./Root";
@@ -18,5 +17,3 @@ root.render(
     </RecipeProvider>
   </Router>
 );
-
-reportWebVitals();

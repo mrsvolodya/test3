@@ -1,31 +1,21 @@
-import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
 import styles from "./RecipeDetail.module.css";
+import { useDetails } from "../../hooks/useDetails";
+import { IngredientsList } from "../IngredientsList";
 
-export const RecipeDetail = () => {
+export function RecipeDetail() {
   const { id } = useParams<{ id: string }>();
-  const [recipe, setRecipe] = useState<any>(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchRecipe = async () => {
-      try {
-        const response = await axios.get(
-          `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`
-        );
-        setRecipe(response.data.meals[0]);
-      } catch (error) {
-        console.error("Error fetching recipe", error);
-      }
-    };
+  const { data: recipe, isLoading, isError } = useDetails(id || "");
+  console.log(recipe);
 
-    if (id) {
-      fetchRecipe();
-    }
-  }, [id]);
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error: Could not fetch recipe details.</div>;
+  if (!recipe) {
+    return <div>No recipe found!</div>;
+  }
 
-  if (!recipe) return <div>Loading...</div>;
   return (
     <div className={styles.recipeDetail}>
       <button onClick={() => navigate("/")} className={styles.backButton}>
@@ -41,20 +31,7 @@ export const RecipeDetail = () => {
       <h3 className={styles.recipeArea}>Area: {recipe.strArea}</h3>
       <h4 className={styles.recipeInstructions}>Instructions</h4>
       <p>{recipe.strInstructions}</p>
-      <h4 className={styles.recipeInstructions}>Ingredients</h4>
-      <ul className={styles.recipeIngredients}>
-        {Array.from({ length: 100 }).map((_, index) => {
-          const ingredient = recipe[`strIngredient${index + 1}`];
-          const measure = recipe[`strMeasure${index + 1}`];
-          return (
-            ingredient && (
-              <li key={index}>
-                {ingredient} - {measure}
-              </li>
-            )
-          );
-        })}
-      </ul>
+      <IngredientsList recipe={recipe} />
     </div>
   );
-};
+}

@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { QueryKeys } from "../keys/QueryKeys";
-import { fetchRecipes } from "../api/fetchRecipes";
+import { fetchRecipes } from "../api/recipes";
 
-export const useRecipes = (searchQuery: string) => {
+export function useRecipes(searchQuery: string) {
   return useQuery({
     queryKey: [QueryKeys.allCategories, searchQuery],
     queryFn: () => fetchRecipes(searchQuery),
   });
-};
+}
