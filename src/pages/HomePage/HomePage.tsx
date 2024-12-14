@@ -1,15 +1,14 @@
-import { useContext } from "react";
 import { useRecipes } from "../../hooks/useRecipes";
 import { useDebounce } from "../../hooks/useDebounce";
-import { RecipeContext } from "../../store/RecipeProvider";
 import { RecipeList } from "../../components/RecipeList/RecipeList";
 import { Pagination } from "../../components/Pagination/Pagination";
 import { useFilteredRecipes } from "../../hooks/useFilteredRecipes";
+import { useSearchParams } from "react-router-dom";
 
 const RECIPE_ON_PAGE = 2;
 
 export function HomePage() {
-  const { setSearchParams, searchParams } = useContext(RecipeContext);
+  const [searchParams, setSearchParams] = useSearchParams("");
 
   const filterBy = searchParams.get("filterBy") || "";
   const debouncedSearchQuery = useDebounce(filterBy, 1000);

@@ -1,11 +1,10 @@
-import { useContext } from "react";
-import { RecipeContext } from "../store/RecipeProvider";
+import { useSearchParams } from "react-router-dom";
 
 export function usePagination(
   totalPages: number,
   setCurrentPage: (v: string) => void
 ) {
-  const { searchParams } = useContext(RecipeContext);
+  const [searchParams] = useSearchParams("");
   const currentPage = searchParams.get("page") || "1";
   const toNumber = (value: string | number): number => +value;
 

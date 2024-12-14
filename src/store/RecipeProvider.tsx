@@ -2,11 +2,8 @@ import React, { createContext, useEffect, useState } from "react";
 import { ProviderProps } from "../types/ProviderProps";
 import { Meal } from "../types/Meal";
 import { ContextProps } from "../types/ContextProps";
-import { useSearchParams } from "react-router-dom";
 
 const RecipeContext = createContext<ContextProps>({
-  searchParams: new URLSearchParams(),
-  setSearchParams: () => {},
   selectedRecipes: [],
   hanleSelectedRecipes: () => {},
   isInCart: () => false,
@@ -14,7 +11,6 @@ const RecipeContext = createContext<ContextProps>({
 
 function RecipeProvider({ children }: ProviderProps) {
   const [selectedRecipes, setSelectedRecipes] = useState<Meal[]>([]);
-  const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
     const favorites = localStorage.getItem("selectedRecipes");
@@ -54,8 +50,6 @@ function RecipeProvider({ children }: ProviderProps) {
   return (
     <RecipeContext.Provider
       value={{
-        searchParams,
-        setSearchParams,
         selectedRecipes,
         hanleSelectedRecipes,
         isInCart,

@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useRef } from "react";
-import { RecipeContext } from "../../store/RecipeProvider";
+import React, { useEffect, useRef } from "react";
 import { useCategories } from "../../hooks/useCategories";
 import styles from "./RecipeFilter.module.css";
+import { useSearchParams } from "react-router-dom";
 
 export function RecipeFilter() {
-  const { setSearchParams, searchParams } = useContext(RecipeContext);
+  const [searchParams, setSearchParams] = useSearchParams("");
   const { data, isLoading, isError } = useCategories();
   const inputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
